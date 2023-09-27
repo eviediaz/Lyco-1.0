@@ -1,0 +1,457 @@
+﻿@model pruebita.Models.Usuario
+@inject IHttpContextAccessor accessor
+@using Newtonsoft.Json;
+
+@{
+    ViewBag.Title = "Interfaz";
+    var sesion = accessor.HttpContext.Session.GetString("susuario");
+    var usuario = JsonConvert.DeserializeObject<Usuario>(sesion);
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+</head>
+
+<body>
+
+	<div class="loader-bg">
+		<div class="loader-track">
+			<div class="loader-fill"></div>
+		</div>
+	</div>
+
+	<div class="pc-mob-header pc-header">
+		<div class="pcm-logo">
+            <img src="~/images/logo.svg" alt="" class="logo logo-lg">
+		</div>
+		<div class="pcm-toolbar">
+			<a href="#!" class="pc-head-link" id="mobile-collapse">
+				<div class="hamburger hamburger--arrowturn">
+					<div class="hamburger-box">
+						<div class="hamburger-inner"></div>
+					</div>
+				</div>
+			</a>
+			<a href="#!" class="pc-head-link" id="header-collapse">
+				<i data-feather="more-vertical"></i>
+			</a>
+		</div>
+	</div>
+
+	<nav class="pc-sidebar ">
+		<div class="navbar-wrapper">
+			<div class="m-header">
+                <a asp-action="Interfaz" class="b-brand">
+
+                    <img src="~/images/logo.svg" alt="" class="logo logo-lg">
+                    <img src="~/images/logo-sm.svg" alt="" class="logo logo-sm">
+				</a>
+			</div>
+			<div class="navbar-content">
+				<ul class="pc-navbar">
+					<li class="pc-item pc-caption">
+						<label>Navigación</label>
+					</li>
+
+                    
+                    <li class="pc-item">
+                        <a asp-action="Interfaz" class="pc-link "><span class="pc-micon"><i class="material-icons-two-tone">home</i></span><span class="pc-mtext">Principal</span></a>
+                    </li>
+
+                    <li class="pc-item">
+                        <a asp-controller="House" asp-action="EditPerfil" asp-route-id="@Model.IdUsuario" class="pc-link "><span class="pc-micon"><i class="material-icons-two-tone">history_edu</i></span><span class="pc-mtext">Perfil</span></a>
+                    </li>
+                    
+                    @if (usuario.TipoUsuario.Equals("1"))
+                    {
+                        <li class="pc-item pc-caption">
+                            <label>Entrar</label>
+                        </li>
+
+                        <li class="pc-item">
+                            <a data-toggle="modal" data-target="#entrarSesion" class="pc-link "><span class="pc-micon"><i class="material-icons-two-tone">table_rows</i></span><span class="pc-mtext">Sesión</span></a>
+                        </li>
+                    }
+
+                    else if(usuario.TipoUsuario.Equals("2"))
+                    {
+                        <li class="pc-item pc-caption">
+                            <label>Crear</label>
+                        </li>
+                    
+                        <li class="pc-item pc-hasmenu">
+                            <a data-toggle="modal" data-target="#crearSesion" class="pc-link "><span class="pc-micon"><i class="material-icons-two-tone">edit</i></span><span class="pc-mtext">Sesión</span></a>
+                        </li>
+                    }
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+
+	<header class="pc-header">
+		<div class="header-wrapper">
+			<div class="ml-auto">
+				<ul class="list-unstyled">
+					<li class="dropdown pc-h-item">
+						<a class="pc-head-link dropdown-toggle arrow-none mr-0" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+							<i class="material-icons-two-tone">account_circle</i>
+							<span>
+								<span class="user-name">@(usuario.NombreUsuario) @(usuario.ApellidoUsuario)</span>
+                                <span class="user-desc">
+                                    @if (usuario.TipoUsuario.Equals("1")){@("Alumno")}
+                                    else if (usuario.TipoUsuario.Equals("2")){@("Profesor")}
+                                </span>
+							</span>
+						</a>
+						<div class="dropdown-menu dropdown-menu-right pc-h-dropdown">
+                            <a asp-action="Index" class="dropdown-item">
+								<i class="material-icons-two-tone">chrome_reader_mode</i>
+								<span>Cerrar Sesión</span>
+							</a>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</header>
+
+
+<div class="pc-container">
+    <div class="pcoded-content">
+
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div class="page-header-title">
+                            <h5 class="m-b-10">Lyco</h5>
+                        </div>
+                        <ul class="breadcrumb">
+                                <li class="breadcrumb-item"><a asp-action="Interfaz">Principal</a></li>
+                            <li class="breadcrumb-item">Secciones</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-xl-12 col-md-12">
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card prod-p-card background-pattern-white text-center">
+                            <div class="card-body">
+                                <div class="row align-items-center m-b-0 ">
+                                        <h2>
+                                            ¡Bienvenido @if (usuario.TipoUsuario.Equals("1")){@("Alumno")}
+                                            else if (usuario.TipoUsuario.Equals("2")){@("Profesor")}
+                                            @(usuario.NombreUsuario) @(usuario.ApellidoUsuario)!</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h2>Sesiones</h2>
+                        @if (usuario.TipoUsuario.Equals("1"))
+                        {
+                            <div class="col-sm-12">
+                                <div class="card prod-p-card bg-info" data-toggle="modal" data-target="#entrarSesion">
+                                    <div class="card-body">
+                                        <div class="row align-items-center m-b-0 ">
+                                            <div class="col">
+                                                <h6 class="m-b-5 text-white">Entrar</h6>
+                                                <h3 class="m-b-0 text-white">Sesión</h3>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="bi bi-send-plus-fill text-white"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        
+                        else if(usuario.TipoUsuario.Equals("2"))
+                        {
+                            <div class="col-sm-12">
+                                <div class="card prod-p-card bg-primary background-pattern-white" data-toggle="modal" data-target="#crearSesion">
+                                <div class="card-body">
+                                    <div class="row align-items-center m-b-0">
+                                        <div class="col">
+                                            <h6 class="m-b-5 text-white">Crear</h6>
+                                            <h3 class="m-b-0 text-white">Sesión</h3>
+                                        </div>
+                                    <div class="col-auto">
+                                        <i class="bi bi-send-plus-fill text-white"></i>
+                                    </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    @if (usuario.TipoUsuario.Equals("1"))
+    {
+        <div class="modal fade" id="entrarSesion" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="">Entrar a sesión</h5>
+                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label class="col-form-label">Presione para entrar a sesión</label>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn  btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn  btn-primary"><a asp-controller="House" asp-action="Sesion" asp-route-id="@Model.IdUsuario">Ingresar</a></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    else if (usuario.TipoUsuario.Equals("2"))
+    {
+        <div class="modal fade" id="crearSesion" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="">Crear una sesión</h5>
+                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label class="col-form-label">Título</label>
+                                <input type="text" class="form-control" id="tituloSesion">
+                                <label class="col-form-label">Nombre (Ejm: index.html)</label>
+                                <input type="text" class="form-control" id="crearNomArchivo">
+                                <label class="col-form-label">Extensión</label>
+                                <select id="modeCrear" class="form-control">
+                                    <option value="ace/mode/abap">ABAP</option>
+                                    <option value="ace/mode/abc">ABC</option>
+                                    <option value="ace/mode/actionscript">ActionScript</option>
+                                    <option value="ace/mode/ada">ADA</option>
+                                    <option value="ace/mode/alda">Alda</option>
+                                    <option value="ace/mode/apache_conf">Apache Conf</option>
+                                    <option value="ace/mode/apex">Apex</option>
+                                    <option value="ace/mode/aql">AQL</option>
+                                    <option value="ace/mode/asciidoc">AsciiDoc</option>
+                                    <option value="ace/mode/asl">ASL</option>
+                                    <option value="ace/mode/assembly_x86">Assembly x86</option>
+                                    <option value="ace/mode/autohotkey">AutoHotkey/AutoIt</option>
+                                    <option value="ace/mode/batchfile">BatchFile</option>
+                                    <option value="ace/mode/c_cpp">C and C++</option>
+                                    <option value="ace/mode/c9search">C9Search</option>
+                                    <option value="ace/mode/cirru">Cirru</option>
+                                    <option value="ace/mode/clojure">Clojure</option>
+                                    <option value="ace/mode/cobol">Cobol</option>
+                                    <option value="ace/mode/coffee">CoffeeScript</option>
+                                    <option value="ace/mode/coldfusion">ColdFusion</option>
+                                    <option value="ace/mode/crystal">Crystal</option>
+                                    <option value="ace/mode/csharp">C#</option>
+                                    <option value="ace/mode/csound_document">Csound Document</option>
+                                    <option value="ace/mode/csound_orchestra">Csound</option>
+                                    <option value="ace/mode/csound_score">Csound Score</option>
+                                    <option value="ace/mode/css">CSS</option>
+                                    <option value="ace/mode/curly">Curly</option>
+                                    <option value="ace/mode/d">D</option>
+                                    <option value="ace/mode/dart">Dart</option>
+                                    <option value="ace/mode/diff">Diff</option>
+                                    <option value="ace/mode/dockerfile">Dockerfile</option>
+                                    <option value="ace/mode/dot">Dot</option>
+                                    <option value="ace/mode/drools">Drools</option>
+                                    <option value="ace/mode/edifact">Edifact</option>
+                                    <option value="ace/mode/eiffel">Eiffel</option>
+                                    <option value="ace/mode/ejs">EJS</option>
+                                    <option value="ace/mode/elixir">Elixir</option>
+                                    <option value="ace/mode/elm">Elm</option>
+                                    <option value="ace/mode/erlang">Erlang</option>
+                                    <option value="ace/mode/forth">Forth</option>
+                                    <option value="ace/mode/fortran">Fortran</option>
+                                    <option value="ace/mode/fsharp">FSharp</option>
+                                    <option value="ace/mode/fsl">FSL</option>
+                                    <option value="ace/mode/ftl">FreeMarker</option>
+                                    <option value="ace/mode/gcode">Gcode</option>
+                                    <option value="ace/mode/gherkin">Gherkin</option>
+                                    <option value="ace/mode/gitignore">Gitignore</option>
+                                    <option value="ace/mode/glsl">Glsl</option>
+                                    <option value="ace/mode/gobstones">Gobstones</option>
+                                    <option value="ace/mode/golang">Go</option>
+                                    <option value="ace/mode/graphqlschema">GraphQLSchema</option>
+                                    <option value="ace/mode/groovy">Groovy</option>
+                                    <option value="ace/mode/haml">HAML</option>
+                                    <option value="ace/mode/handlebars">Handlebars</option>
+                                    <option value="ace/mode/haskell">Haskell</option>
+                                    <option value="ace/mode/haskell_cabal">Haskell Cabal</option>
+                                    <option value="ace/mode/haxe">haXe</option>
+                                    <option value="ace/mode/hjson">Hjson</option>
+                                    <option value="ace/mode/html">HTML</option>
+                                    <option value="ace/mode/html_elixir">HTML (Elixir)</option>
+                                    <option value="ace/mode/html_ruby">HTML (Ruby)</option>
+                                    <option value="ace/mode/ini">INI</option>
+                                    <option value="ace/mode/io">Io</option>
+                                    <option value="ace/mode/ion">Ion</option>
+                                    <option value="ace/mode/jack">Jack</option>
+                                    <option value="ace/mode/jade">Jade</option>
+                                    <option value="ace/mode/java">Java</option>
+                                    <option value="ace/mode/javascript">JavaScript</option>
+                                    <option value="ace/mode/json">JSON</option>
+                                    <option value="ace/mode/json5">JSON5</option>
+                                    <option value="ace/mode/jsoniq">JSONiq</option>
+                                    <option value="ace/mode/jsp">JSP</option>
+                                    <option value="ace/mode/jssm">JSSM</option>
+                                    <option value="ace/mode/jsx">JSX</option>
+                                    <option value="ace/mode/julia">Julia</option>
+                                    <option value="ace/mode/kotlin">Kotlin</option>
+                                    <option value="ace/mode/latex">LaTeX</option>
+                                    <option value="ace/mode/latte">Latte</option>
+                                    <option value="ace/mode/less">LESS</option>
+                                    <option value="ace/mode/liquid">Liquid</option>
+                                    <option value="ace/mode/lisp">Lisp</option>
+                                    <option value="ace/mode/livescript">LiveScript</option>
+                                    <option value="ace/mode/log">Log</option>
+                                    <option value="ace/mode/logiql">LogiQL</option>
+                                    <option value="ace/mode/lsl">LSL</option>
+                                    <option value="ace/mode/lua">Lua</option>
+                                    <option value="ace/mode/luapage">LuaPage</option>
+                                    <option value="ace/mode/lucene">Lucene</option>
+                                    <option value="ace/mode/makefile">Makefile</option>
+                                    <option value="ace/mode/markdown">Markdown</option>
+                                    <option value="ace/mode/mask">Mask</option>
+                                    <option value="ace/mode/matlab">MATLAB</option>
+                                    <option value="ace/mode/maze">Maze</option>
+                                    <option value="ace/mode/mediawiki">MediaWiki</option>
+                                    <option value="ace/mode/mel">MEL</option>
+                                    <option value="ace/mode/mips">MIPS</option>
+                                    <option value="ace/mode/mixal">MIXAL</option>
+                                    <option value="ace/mode/mushcode">MUSHCode</option>
+                                    <option value="ace/mode/mysql">MySQL</option>
+                                    <option value="ace/mode/nginx">Nginx</option>
+                                    <option value="ace/mode/nim">Nim</option>
+                                    <option value="ace/mode/nix">Nix</option>
+                                    <option value="ace/mode/nsis">NSIS</option>
+                                    <option value="ace/mode/nunjucks">Nunjucks</option>
+                                    <option value="ace/mode/objectivec">Objective-C</option>
+                                    <option value="ace/mode/ocaml">OCaml</option>
+                                    <option value="ace/mode/partiql">PartiQL</option>
+                                    <option value="ace/mode/pascal">Pascal</option>
+                                    <option value="ace/mode/perl">Perl</option>
+                                    <option value="ace/mode/pgsql">pgSQL</option>
+                                    <option value="ace/mode/php_laravel_blade">PHP (Blade Template)</option>
+                                    <option value="ace/mode/php">PHP</option>
+                                    <option value="ace/mode/pig">Pig</option>
+                                    <option value="ace/mode/powershell">Powershell</option>
+                                    <option value="ace/mode/praat">Praat</option>
+                                    <option value="ace/mode/prisma">Prisma</option>
+                                    <option value="ace/mode/prolog">Prolog</option>
+                                    <option value="ace/mode/properties">Properties</option>
+                                    <option value="ace/mode/protobuf">Protobuf</option>
+                                    <option value="ace/mode/puppet">Puppet</option>
+                                    <option value="ace/mode/python">Python</option>
+                                    <option value="ace/mode/qml">QML</option>
+                                    <option value="ace/mode/r">R</option>
+                                    <option value="ace/mode/raku">Raku</option>
+                                    <option value="ace/mode/razor">Razor</option>
+                                    <option value="ace/mode/rdoc">RDoc</option>
+                                    <option value="ace/mode/red">Red</option>
+                                    <option value="ace/mode/rhtml">RHTML</option>
+                                    <option value="ace/mode/rst">RST</option>
+                                    <option value="ace/mode/ruby">Ruby</option>
+                                    <option value="ace/mode/rust">Rust</option>
+                                    <option value="ace/mode/sac">SaC</option>
+                                    <option value="ace/mode/sass">SASS</option>
+                                    <option value="ace/mode/scad">SCAD</option>
+                                    <option value="ace/mode/scala">Scala</option>
+                                    <option value="ace/mode/scheme">Scheme</option>
+                                    <option value="ace/mode/scrypt">Scrypt</option>
+                                    <option value="ace/mode/scss">SCSS</option>
+                                    <option value="ace/mode/sh">SH</option>
+                                    <option value="ace/mode/sjs">SJS</option>
+                                    <option value="ace/mode/slim">Slim</option>
+                                    <option value="ace/mode/smarty">Smarty</option>
+                                    <option value="ace/mode/smithy">Smithy</option>
+                                    <option value="ace/mode/snippets">snippets</option>
+                                    <option value="ace/mode/soy_template">Soy Template</option>
+                                    <option value="ace/mode/space">Space</option>
+                                    <option value="ace/mode/sql">SQL</option>
+                                    <option value="ace/mode/sqlserver">SQLServer</option>
+                                    <option value="ace/mode/stylus">Stylus</option>
+                                    <option value="ace/mode/svg">SVG</option>
+                                    <option value="ace/mode/swift">Swift</option>
+                                    <option value="ace/mode/tcl">Tcl</option>
+                                    <option value="ace/mode/terraform">Terraform</option>
+                                    <option value="ace/mode/tex">Tex</option>
+                                    <option value="ace/mode/text">Text</option>
+                                    <option value="ace/mode/textile">Textile</option>
+                                    <option value="ace/mode/toml">Toml</option>
+                                    <option value="ace/mode/tsx">TSX</option>
+                                    <option value="ace/mode/twig">Twig</option>
+                                    <option value="ace/mode/typescript">Typescript</option>
+                                    <option value="ace/mode/vala">Vala</option>
+                                    <option value="ace/mode/vbscript">VBScript</option>
+                                    <option value="ace/mode/velocity">Velocity</option>
+                                    <option value="ace/mode/verilog">Verilog</option>
+                                    <option value="ace/mode/vhdl">VHDL</option>
+                                    <option value="ace/mode/visualforce">Visualforce</option>
+                                    <option value="ace/mode/wollok">Wollok</option>
+                                    <option value="ace/mode/xml">XML</option>
+                                    <option value="ace/mode/xquery">XQuery</option>
+                                    <option value="ace/mode/yaml">YAML</option>
+                                    <option value="ace/mode/zeek">Zeek</option>
+                                    <option value="ace/mode/django">Django</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button id="modalCrearSesion"  type="submit" class="btn  btn-primary"><a asp-action="Sesion" asp-route-id="@Model.IdUsuario">Crear</a></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+</body>
+<button type="submit" class="btn  btn-primary"><a asp-action="Sesion" asp-route-id="@Model.IdUsuario">Crear</a></button>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
+<script>
+    $('#modalCrearSesion').click(function () {
+
+        var deviceid = $('#modeCrear option:selected').val();
+        alert(deviceid);  //Comment it after testing
+
+        $.ajax({
+            type: 'POST',
+            data: { mode: deviceid },
+            dataType: "json",
+            url: '@Url.Action("Sesion")' + '/',
+            success: function (result) {
+                console.log("Se envio");
+            }
+            failure: function (errMsg) {
+                alert("No pasa naa");
+            }
+        });
+
+    });
+</script>
+
+</html>
